@@ -9,7 +9,7 @@ from model import ModelBuilder
 # Helper function to load preprocessed data
 def get_preprocessed_data():
     # Assuming preprocessor saves cleaned data in a specific file
-    preprocessed_data_path = "data/preprocessed_data.pkl"
+    preprocessed_data_path = "data/lr_regg.pkl"
     if not os.path.exists(preprocessed_data_path):
         raise FileNotFoundError(f"Preprocessed data file not found at {preprocessed_data_path}")
     
