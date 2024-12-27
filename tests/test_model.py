@@ -3,8 +3,7 @@ import pytest
 import pickle
 import sys
 import os
-sys.path.append(r'G:\my projects\Banglore_RealEstate_forecast-using-CICD-piplines\src')
-
+sys.path.append(r'Banglore_RealEstate_forecast-using-CICD-piplines\src')
 from model import ModelBuilder
 
 # Helper function to load preprocessed data
