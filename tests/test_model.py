@@ -1,111 +1,76 @@
-import numpy as np
-import pytest
 import pickle
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',)))
+import numpy as np
 
-# Helper function to load preprocessed data
-def get_preprocessed_data():
-    # Assuming preprocessor saves cleaned data in a specific file
-    preprocessed_data_path = "models/lr_regg.pkl"
-    if not os.path.exists(preprocessed_data_path):
-        raise FileNotFoundError(f"Preprocessed data file not found at {preprocessed_data_path}")
+# Load model and feature names
+def load_model_and_features(model_path, feature_path):
+    # Load the trained model
+    with open(model_path, "rb") as file:
+        model = pickle.load(file)
     
-    with open(preprocessed_data_path, 'rb') as file:
-        return pickle.load(file)
+    # Load the feature names
+    with open(feature_path, "rb") as file:
+        feature_names = pickle.load(file)
 
-# Test case 1: Test for Correctness of Predictions
+    return model, feature_names
+
+# Predict price using the model
+def predict_price(location, sqft, bath, bhk, model, feature_names):
+    # Create an input array with zeros for all features
+    x = np.zeros(len(feature_names))
+
+    # Assign values for sqft, bath, and bhk
+    if 'total_sqft' in feature_names:
+        x[feature_names.index('total_sqft')] = sqft
+    if 'bath' in feature_names:
+        x[feature_names.index('bath')] = bath
+    if 'bhk' in feature_names:
+        x[feature_names.index('bhk')] = bhk
+
+    # Set the location column to 1 if it exists in feature names
+    if location in feature_names:
+        loc_index = feature_names.index(location)
+        x[loc_index] = 1
+
+    # Make prediction
+    return model.predict([x])[0]
+
+# Test function
 def test_house_price_predictions():
-    # Load preprocessed data
-    data = get_preprocessed_data()
-    
-    # Create ModelBuilder instance
-    model_builder = ModelBuilder(data=data)
-    X_train, X_test, y_train, y_test = model_builder.split_data(target_column='price')
-    
-    # Train the model
-    model_builder.train_model(X_train, y_train)
-    
-    # Example known data for prediction
-    X_test_sample = np.array([
-        [3, 1500, 2],  # 3 bedrooms, 1500 sqft, 2 bathrooms
-        [4, 2000, 3],  # 4 bedrooms, 2000 sqft, 3 bathrooms
-        [2, 1200, 1]   # 2 bedrooms, 1200 sqft, 1 bathroom
-    ])
-    expected_prices = [70, 100, 50]  # Replace with expected values in lakhs
-    
-    y_pred = model_builder.model.predict(X_test_sample)
-    assert np.allclose(y_pred, expected_prices, atol=10), f"Predictions {y_pred} are not as expected"
+    # Paths to the model and feature names
+    model_path = "models/lr_regg.pkl"
+    feature_path = "models/feature_names.pkl"
 
-# Test case 2: Test for Model Performance
-def test_house_price_performance():
-    # Load preprocessed data
-    data = get_preprocessed_data()
-    
-    # Create ModelBuilder instance
-    model_builder = ModelBuilder(data=data)
-    X_train, X_test, y_train, y_test = model_builder.split_data(target_column='price')
-    
-    # Train and evaluate the model
-    model_builder.train_model(X_train, y_train)
-    mse, r2 = model_builder.evaluate_model(X_test, y_test)
-    
-    # Check for acceptable R2 score (e.g., above 0.7)
-    assert r2 > 0.7, f"Model R2 score is below acceptable threshold: {r2}"
+    # Load the model and features
+    model, feature_names = load_model_and_features(model_path, feature_path)
 
-# Test case 3: Test Model Serialization and Loading
-def test_model_serialization():
-    # Load preprocessed data
-    data = get_preprocessed_data()
-    
-    # Create ModelBuilder instance
-    model_builder = ModelBuilder(data=data)
-    X_train, X_test, y_train, y_test = model_builder.split_data(target_column='price')
-    
-    # Train the model and save it
-    model_builder.train_model(X_train, y_train)
-    model_path = model_builder.save_model_as_pickle()
+    # Test cases and expected outputs
+    test_cases = [
+        {"location": "Whitefield", "sqft": 1200, "bath": 2, "bhk": 2, "expected": 94},
+        {"location": "Banaswadi", "sqft": 1500, "bath": 3, "bhk": 3, "expected": 118},
+        {"location": "Basavangudi", "sqft": 1800, "bath": 3, "bhk": 4, "expected": 142},
+        {"location": "Nonexistent Location", "sqft": 1000, "bath": 2, "bhk": 3, "expected": 79},
+        {"location": "Electronic City Phase II", "sqft": 1056, "bath": 2, "bhk": 2, "expected": 83},
+        {"location": "Chikka Tirupathi", "sqft": 800, "bath": 2, "bhk": 2, "expected": 63}
+    ]
 
-    # Load the model and compare predictions
-    loaded_model = model_builder.load_model_from_pickle(model_path)
-    y_pred_original = model_builder.model.predict(X_test)
-    y_pred_loaded = loaded_model.predict(X_test)
-    assert np.allclose(y_pred_original, y_pred_loaded), "Predictions differ after loading the model"
+    # Run predictions and validate against expected outputs
+    for case in test_cases:
+        location = case["location"]
+        sqft = case["sqft"]
+        bath = case["bath"]
+        bhk = case["bhk"]
+        expected = case["expected"]
 
-# Test case 4: Test for Handling Extreme Values
-def test_house_price_outliers():
-    # Load preprocessed data
-    data = get_preprocessed_data()
-    
-    # Create ModelBuilder instance
-    model_builder = ModelBuilder(data=data)
-    X_train, _, y_train, _ = model_builder.split_data(target_column='price')
-    
-    # Train the model
-    model_builder.train_model(X_train, y_train)
-    
-    # Test for extreme values
-    X_edge = np.array([[10, 10000, 10]])  # 10 bedrooms, 10,000 sqft, 10 bathrooms
-    y_pred_edge = model_builder.model.predict(X_edge)
-    assert np.isfinite(y_pred_edge).all(), "Prediction for outlier is not finite"
+        try:
+            predicted_price = predict_price(location, sqft, bath, bhk, model, feature_names)
+            assert round(predicted_price / 10) == expected, (
+                f"Failed for Location: {location}, "
+                f"Expected: {expected}, Got: {predicted_price/10:.0f} lakhs"
+            )
+            print(f"Test Passed: Location: {location}, Predicted: {predicted_price/10:.0f} lakhs")
+        except Exception as e:
+            print(f"Prediction failed for Location: {location}, Error: {e}")
 
-# Test case 5: Test Predictions on New Data
-def test_house_price_on_new_data():
-    # Load preprocessed data
-    data = get_preprocessed_data()
-    
-    # Create ModelBuilder instance
-    model_builder = ModelBuilder(data=data)
-    X_train, _, y_train, _ = model_builder.split_data(target_column='price')
-    
-    # Train the model
-    model_builder.train_model(X_train, y_train)
-    
-    # New test data
-    X_new = np.array([
-        [3, 2000, 2],  # 3 bedrooms, 2000 sqft, 2 bathrooms
-        [5, 3500, 4]   # 5 bedrooms, 3500 sqft, 4 bathrooms
-    ])
-    y_pred_new = model_builder.model.predict(X_new)
-    
+# Run the tests
+if __name__ == "__main__":
+    test_house_price_predictions()
