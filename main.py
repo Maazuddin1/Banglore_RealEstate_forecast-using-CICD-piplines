@@ -1,5 +1,6 @@
 from src.preprocessing import Preprocessing
 from src.model import ModelBuilder
+from tests import test2direct
 import pandas as pd
 import pickle
 import os
@@ -37,6 +38,9 @@ def main():
 
     # Save the feature names as a pickle file
     model_builder.save_features_as_pickle(data=preprocessor.data)
+
+    test2direct.main()
+
 
 if __name__ == "__main__":
     main()
