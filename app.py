@@ -1,39 +1,57 @@
 from flask import Flask, request, jsonify
-import pandas as pd
+import pickle
 import numpy as np
-from sklearn.externals import joblib
+import os
 
-# Initialize the Flask app
+# Load the trained model
+MODEL_PATH = 'models/lr_regg.pkl'
+FEATURES_PATH = 'models/feature_names.pkl'
+
+if not os.path.exists(MODEL_PATH) or not os.path.exists(FEATURES_PATH):
+    raise FileNotFoundError("Model or feature files not found. Please train the model first.")
+
+with open(MODEL_PATH, 'rb') as model_file:
+    model = pickle.load(model_file)
+
+with open(FEATURES_PATH, 'rb') as feature_file:
+    feature_names = pickle.load(feature_file)
+
 app = Flask(__name__)
-
-# Load the pre-trained model and preprocessing pipeline
-model = joblib.load("models/house_price_model.pkl")  # Replace with your model file
-#preprocessor = joblib.load("models/preprocessor.pkl")  # Replace with your preprocessor file
-
-@app.route('/', methods=['GET'])
-def home():
-    return "Banglore RealEstate forecasting API !"
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    """
+    Accepts JSON data with features and returns the predicted price.
+    """
     try:
-        # Parse the input JSON data
         data = request.get_json()
+        
+        # Ensure all required features are provided
+        input_features = []
+        for feature in feature_names:
+            if feature in data:
+                input_features.append(data[feature])
+            else:
+                return jsonify({'error': f'Missing feature: {feature}'}), 400
 
-        # Convert the input data into a DataFrame
-        #input_data = pd.DataFrame([data])
-
-        # Preprocess the input data
-        #processed_data = preprocessor.transform(input_data)
-
-        # Make predictions
-        predictions = model.predict(data)
-
-        # Return predictions as JSON
-        return jsonify({"predicted_price": float(predictions[0])})
+        # Convert to numpy array and reshape
+        input_array = np.array(input_features).reshape(1, -1)
+        
+        # Make a prediction
+        prediction = model.predict(input_array)
+        return jsonify({'predicted_price': prediction[0]})
 
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+@app.route('/', methods=['GET'])
+def home():
+    """
+    Home route to check if the API is running.
+    """
+    return "Welcome to the Real Estate Price Prediction API!", 200
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
