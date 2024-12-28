@@ -1,64 +1,76 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template
 import pickle
 import numpy as np
 import os
 
-# Load the trained model
-MODEL_PATH = 'models/lr_regg.pkl'
-FEATURES_PATH = 'models/feature_names.pkl'
-
-if not os.path.exists(MODEL_PATH) or not os.path.exists(FEATURES_PATH):
-    raise FileNotFoundError("Model or feature files not found. Please train the model first.")
-
-with open(MODEL_PATH, 'rb') as model_file:
-    model = pickle.load(model_file)
-
-with open(FEATURES_PATH, 'rb') as feature_file:
-    feature_names = pickle.load(feature_file)
-
 app = Flask(__name__)
 
-@app.route('/')
+# Load the model and feature names
+def load_model_and_features():
+    model_path = "models/lr_regg.pkl"
+    feature_path = "models/feature_names.pkl"
+    
+    with open(model_path, "rb") as file:
+        model = pickle.load(file)
+    
+    with open(feature_path, "rb") as file:
+        feature_names = pickle.load(file)
+    
+    return model, feature_names
+
+def predict_price(location, sqft, bath, bhk, model, feature_names):
+    x = np.zeros(len(feature_names))
+    
+    if 'total_sqft' in feature_names:
+        x[feature_names.index('total_sqft')] = sqft
+    if 'bath' in feature_names:
+        x[feature_names.index('bath')] = bath
+    if 'bhk' in feature_names:
+        x[feature_names.index('bhk')] = bhk
+    if location in feature_names:
+        loc_index = feature_names.index(location)
+        x[loc_index] = 1
+
+    return model.predict([x])[0]
+
+# Load model and features when app starts
+model, feature_names = load_model_and_features()
+
+# Get list of locations (excluding non-location features)
+locations = [feat for feat in feature_names if feat not in ['total_sqft', 'bath', 'bhk']]
+locations.sort()
+
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    """
-    Home route that displays a form where the user can input values to predict the price.
-    Also displays a suggestion bar for users to understand what data is needed.
-    """
-    return render_template('index.html', feature_names=feature_names)
+    prediction = None
+    error = None
+    property_details = None
+    
+    if request.method == 'POST':
+        try:
+            location = request.form.get('location')
+            sqft = float(request.form.get('sqft'))
+            bath = int(request.form.get('bath'))
+            bhk = int(request.form.get('bhk'))
+            
+            price = predict_price(location, sqft, bath, bhk, model, feature_names)
+            prediction = round(price / 10, 2)  # Convert to lakhs and round to 2 decimal places
+            
+            property_details = {
+                'location': location,
+                'sqft': sqft,
+                'bath': bath,
+                'bhk': bhk
+            }
+        except Exception as e:
+            error = f"Error: {str(e)}"
+    
+    return render_template('index.html', 
+                         locations=locations, 
+                         prediction=prediction, 
+                         error=error,
+                         property_details=property_details)
 
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    """
-    Accepts form data from the user, processes it, and returns the predicted price.
-    """
-    try:
-        # Get form data from the HTML form
-        data = request.form.to_dict()
-        
-        # Ensure all required features are provided
-        input_features = []
-        missing_features = []
-        for feature in feature_names:
-            if feature in data:
-                input_features.append(float(data[feature]))
-            else:
-                missing_features.append(feature)
-        
-        if missing_features:
-            return jsonify({'error': f'Missing features: {", ".join(missing_features)}'}), 400
-
-        # Convert to numpy array and reshape for prediction
-        input_array = np.array(input_features).reshape(1, -1)
-        
-        # Make a prediction
-        prediction = model.predict(input_array)
-        
-        return render_template('result.html', prediction=prediction[0])
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.debug = True
+    app.run()
