@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .input-field {
+            margin-bottom: 10px;
+        }
+        .suggestion-bar {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real Estate Price Prediction</h1>
+    <p>Fill in the details below to predict the price of the property:</p>
+    
+    <div class="suggestion-bar">
+        <strong>Note:</strong> Please provide the following input values for prediction: <br>
+        <ul>
+            {% for feature in feature_names %}
+                <li>{{ feature }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="form-container">
+        <form method="POST" action="/predict">
+            {% for feature in feature_names %}
+                <div class="input-field">
+                    <label for="{{ feature }}">{{ feature }}:</label>
+                    <input type="text" id="{{ feature }}" name="{{ feature }}" required>
+                </div>
+            {% endfor %}
+            <button type="submit">Predict Price</button>
+        </form>
+    </div>
+</body>
+</html>
