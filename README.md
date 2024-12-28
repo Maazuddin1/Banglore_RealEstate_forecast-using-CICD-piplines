@@ -1,2 +1,2 @@
 youtube video link:👉
-[https://youtu.be/NcmXkE907io](url)
+[https://www.youtube.com/watch?v=NcmXkE907io](url)
