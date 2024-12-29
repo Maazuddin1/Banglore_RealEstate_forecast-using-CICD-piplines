@@ -97,8 +97,9 @@ This API bridges the gap between **data science** and **user-friendly deployment
 ### Installation Steps  
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/yourusername/real-estate-predictor.git
-   cd real-estate-predictor
+ git clone https://github.com/Maazuddin1/Banglore_RealEstate_forecast-using-CICD-piplines.git  
+ cd Banglore_RealEstate_forecast-using-CICD-piplines
+ 
    ```
 
 2. Create a virtual environment:  
@@ -139,7 +140,7 @@ This API bridges the gap between **data science** and **user-friendly deployment
 **Output**:  
 ```json
 {
-  "predicted_price": 94.23
+  "predicted_price": 94.23 Lakhs
 }
 ```
 
@@ -180,8 +181,5 @@ Contributions are welcome! Feel free to fork this repository, open issues, or su
 ---
 
 ## 📄 **License**
-This project is licensed under the MIT License.
-
+NIL
 ---
-
-Let me know if you’d like to add your project-specific logos, an updated image, or a link for live hosting once deployed!
