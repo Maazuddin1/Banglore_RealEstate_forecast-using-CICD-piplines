@@ -28,7 +28,7 @@ This API bridges the gap between **data science** and **user-friendly deployment
    - A `/predict` endpoint allows developers to integrate the model with other applications.
 ---
 
-## 🎥 Watch the Demo
+## 🎥 Watch the Demo(click image below👇)
 
 [![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
 
