@@ -1,4 +1,8 @@
 ---
+layout: default
+title: Real Estate Price Prediction API
+description: A machine learning powered real estate price prediction tool with web interface
+---
 
 # 🏠 **Real Estate Price Prediction API**
 
