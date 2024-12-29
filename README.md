@@ -43,7 +43,8 @@ This API bridges the gap between **data science** and **user-friendly deployment
 ---
 
 ## 🎥 Watch the Demo
-[![Watch on YouTube](https://www.youtube.com/watch?v=NcmXkE907io)]
+
+[![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
 
 ---
 
