@@ -1,7 +1,3 @@
-## 🎥 Watch the Demo
-
-[![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
-
 ---
 
 # 🏠 **Real Estate Price Prediction API**
@@ -29,7 +25,13 @@ This API bridges the gap between **data science** and **user-friendly deployment
    - Users input details via forms, and results are displayed instantly.  
 
 4. **API Integration**  
-   - A `/predict` endpoint allows developers to integrate the model with other applications.  
+   - A `/predict` endpoint allows developers to integrate the model with other applications.
+---
+
+## 🎥 Watch the Demo
+
+[![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
+
 
 ---
 
@@ -39,12 +41,6 @@ This API bridges the gap between **data science** and **user-friendly deployment
 
 ### Prediction Results
 ![Prediction Result](images/predicted_results.jpg)
-
----
-
-## 🎥 Watch the Demo
-
-[![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
 
 ---
 
