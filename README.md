@@ -34,12 +34,11 @@ This API bridges the gap between **data science** and **user-friendly deployment
 ---
 
 ## 📷 **Screenshots**
+### Home Page
+![Home Page]([images/home_page.png](https://1drv.ms/i/c/e848534be813883e/EWS76Vyprb9DiLYHDg6AufYBAxqT4yf_O1BS9JMvODnTAQ?e=JYU6dJ))
 
-### Home Page  
-![Home Page](https://via.placeholder.com/1024x600.png?text=Home+Page+UI)
-
-### Prediction Result  
-![Result Page](https://via.placeholder.com/1024x600.png?text=Prediction+Result)
+### Prediction Results
+![Prediction Result](images/prediction_result.png)
 
 ---
 
