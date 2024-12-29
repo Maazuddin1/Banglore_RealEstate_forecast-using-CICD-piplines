@@ -35,7 +35,7 @@ This API bridges the gap between **data science** and **user-friendly deployment
 
 ## 📷 **Screenshots**
 ### Home Page
-![Home Page](images/home_page.png)
+![Home Page](images/homepage.png)
 
 ### Prediction Results
 ![Prediction Result](images/prediction_result.png)
