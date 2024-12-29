@@ -1,4 +1,3 @@
-youtube video link:👉  https://www.youtube.com/watch?v=NcmXkE907io
 
 Got it! Let me craft a **detailed README** that aligns with the goals, working, and functionality of your project while also incorporating images, links, and additional requirements. Here’s a revised version:
 
@@ -51,17 +50,34 @@ This API bridges the gap between **data science** and **user-friendly deployment
 ## 📂 **Project Structure**
 
 ```
-real-estate-predictor/
-├── app.py               # Main Flask Application
-├── templates/           # HTML Templates (index.html, result.html)
-├── static/              # Static Assets (CSS, JS, Images)
-├── models/              # Trained Model and Features
-│   ├── lr_regg.pkl
-│   └── feature_names.pkl
-├── requirements.txt     # Python Dependencies
-├── README.md            # Project Documentation
-└── tests/               # Test Scripts
-    └── test_predictions.py
+├── .github/
+│   └── workflows/
+│       └── python-app.yml          # CI/CD workflow configuration
+├── data/                           # Dataset directory
+│   └── bengaluru_house_prices.csv  # Dataset file for the project
+├── models/                         # Saved models and feature names
+│   ├── feature_names.pkl           # Pickled feature names
+│   └── lr_regg.pkl                 # Trained regression model
+├── src/                            # Source code for the project
+│   ├── EDA.py                      # Exploratory Data Analysis script
+│   ├── model.py                    # Model training and evaluation script
+│   └── preprocessing.py            # Data preprocessing logic
+├── templates/                      # HTML templates for the Flask web app
+│   ├── index.html                  # User input form for predictions
+│   └── results.html                # Displays prediction results
+├── tests/                          # Unit testing for the project
+│   ├── __init__.py                 # Marks the directory as a package
+│   ├── test_model.py               # Tests for the model
+│   └── test2direct.py              # Additional test script
+├── venv/                           # Virtual environment for dependencies
+│   └── __init__.py                 # Marks the directory as a Python package
+├── .gitignore                      # Specifies ignored files for Git
+├── app.py                          # Flask application entry point
+├── main.py                         # Main execution script
+├── requirements.txt                # List of dependencies for the project
+├── setup.py                        # Setup script for packaging the project
+├── README.md                       # Project overview and documentation
+
 ```
 
 ---
