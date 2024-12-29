@@ -38,12 +38,12 @@ This API bridges the gap between **data science** and **user-friendly deployment
 ![Home Page](images/homepage.png)
 
 ### Prediction Results
-![Prediction Result](images/prediction_result.png)
+![Prediction Result](images/predicted_results.jpg)
 
 ---
 
 ## 🎥 Watch the Demo
-[![Watch on YouTube](https://img.youtube.com/vi/abcd1234/0.jpg)](https://www.youtube.com/watch?v=abcd1234)
+[![Watch on YouTube](https://www.youtube.com/watch?v=NcmXkE907io)]
 
 ---
 
