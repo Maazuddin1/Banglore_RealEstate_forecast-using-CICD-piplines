@@ -70,8 +70,6 @@ This API bridges the gap between **data science** and **user-friendly deployment
 │   ├── __init__.py                 # Marks the directory as a package
 │   ├── test_model.py               # Tests for the model
 │   └── test2direct.py              # Additional test script
-├── venv/                           # Virtual environment for dependencies
-│   └── __init__.py                 # Marks the directory as a Python package
 ├── .gitignore                      # Specifies ignored files for Git
 ├── app.py                          # Flask application entry point
 ├── main.py                         # Main execution script
@@ -185,5 +183,5 @@ Contributions are welcome! Feel free to fork this repository, open issues, or su
 ---
 
 ## 📄 **License**
-NIL
+-
 ---
