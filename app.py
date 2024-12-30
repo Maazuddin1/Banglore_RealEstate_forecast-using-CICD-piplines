@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import pickle
 import numpy as np
 import os
@@ -47,10 +47,6 @@ locations.sort()
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    prediction = None
-    error = None
-    property_details = None
-
     if request.method == 'POST':
         try:
             location = request.form.get('location')
@@ -61,22 +57,35 @@ def home():
             price = predict_price(location, sqft, bath, bhk, model, feature_names)
             prediction = round(price / 10, 2)  # Convert to lakhs and round to 2 decimal places
 
-            property_details = {
-                'location': location,
-                'sqft': sqft,
-                'bath': bath,
-                'bhk': bhk
-            }
+            # Redirect to results page with the prediction details
+            return redirect(url_for('results',
+                                    predicted_price=prediction,
+                                    location=location,
+                                    sqft=sqft,
+                                    bath=bath,
+                                    bhk=bhk))
         except Exception as e:
             error = f"Error: {str(e)}"
+            return render_template('index.html', locations=locations, error=error)
 
-    return render_template('index.html',
-                           locations=locations,
-                           prediction=prediction,
-                           error=error,
-                           property_details=property_details)
+    return render_template('index.html', locations=locations)
+
+@app.route('/results')
+def results():
+    # Fetch query parameters from the URL
+    predicted_price = request.args.get('predicted_price')
+    location = request.args.get('location')
+    sqft = request.args.get('sqft')
+    bath = request.args.get('bath')
+    bhk = request.args.get('bhk')
+
+    return render_template('results.html',
+                           predicted_price=predicted_price,
+                           location=location,
+                           sqft=sqft,
+                           bath=bath,
+                           bhk=bhk)
 
 if __name__ == '__main__':
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() in ['true', '1', 'yes']
     app.run(debug=debug_mode)
-
